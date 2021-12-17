@@ -54,8 +54,9 @@ struct CircleBuffer {
 		if (pushId != popId || !full) {
 			BUFFER[pushId] = element;
 			pushId++;
-			if (pushId == popId) full = true;
 			if (pushId == 10) pushId = 0;
+			if (pushId == popId) full = true;
+			
 			return true;
 		}
 		return false;
