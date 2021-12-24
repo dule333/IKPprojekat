@@ -3,3 +3,15 @@
 ################################################################################
 
 /LoadBalancer/LoadBalancer/Debug/LoadBalancer.vcxproj.FileListAbsolute.txt
+/.vs/IKPprojekat/project-colors.json
+/.vs/IKPprojekat/v17/.suo
+*.db
+*.ipch
+*.json
+*.sqlite
+*.suo
+*.db-shm
+*.db-wal
+*.opendb
+/LoadBalancer/LoadBalancer/Debug/LoadBalancer.exe.recipe
+/LoadBalancer/LoadBalancer/Debug/LoadBalancer.Build.CppClean.log
