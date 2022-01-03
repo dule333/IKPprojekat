@@ -152,8 +152,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="LoadBalancer.cpp" />
+    <ClCompile Include="recieve.cpp" />
     <ClCompile Include="report.cpp" />
     <ClCompile Include="structures.cpp" />
+    <ClCompile Include="worker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />

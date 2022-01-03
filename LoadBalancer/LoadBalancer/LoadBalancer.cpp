@@ -9,27 +9,9 @@
 #pragma comment(lib,"Ws2_32.lib")
 
 
-#define SERVER_PORT 5001
-#define ACCESS_BUFFER_SIZE 1024
-#define IP_ADRESS_LENGTH 16
-
-bool SocketInit() {
-	WSADATA wsaData;
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-		printf("WSA STARTUP FAILED WITH ERROR %d \n", WSAGetLastError());
-		return false;
-	}
-	return true;
-}
-
-
 int main()
 {
-	CircleBuffer CB;
-	
-	Reciever rec = Reciever(&CB);
-	
-	rec.start();
+
 
 
 
