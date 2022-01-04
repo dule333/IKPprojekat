@@ -26,7 +26,7 @@ bool SocketInit() {
 
 void Recieve(CircleBuffer* CB, bool* stop) {
 
-	printf("Recieving started! \n")
+	printf("Recieving started! \n");
 
 	sockaddr_in serverAdress;
 	memset(&serverAdress, 0, sizeof(serverAdress));

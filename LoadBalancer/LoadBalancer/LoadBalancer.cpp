@@ -4,7 +4,7 @@
 #include <iostream>
 #include "common.h"
 #include <winsock2.h>
-#include<thread>
+#include <thread>
 
 #pragma comment(lib,"Ws2_32.lib")
 

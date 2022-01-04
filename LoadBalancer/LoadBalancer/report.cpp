@@ -18,5 +18,6 @@ void report(socket_queue *return_sockets)
 
 			free(buffer);
 		}
+		Sleep(10);
 	}
 }

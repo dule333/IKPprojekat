@@ -15,3 +15,8 @@
 *.opendb
 /LoadBalancer/LoadBalancer/Debug/LoadBalancer.exe.recipe
 /LoadBalancer/LoadBalancer/Debug/LoadBalancer.Build.CppClean.log
+*.tlog
+*.obj
+/LoadBalancer/LoadBalancer/Debug/vc143.idb
+/LoadBalancer/LoadBalancer/Debug/vc143.pdb
+/LoadBalancer/LoadBalancer/Debug/LoadBalancer.ilk

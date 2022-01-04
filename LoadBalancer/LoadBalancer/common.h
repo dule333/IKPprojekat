@@ -8,13 +8,13 @@ using namespace std;
 
 struct worker_queue
 {
-	worker_queue* previous;
+	worker_queue* next;
 	thread* value;
 };
 
 struct socket_queue
 {
-	socket_queue* previous;
+	socket_queue* next;
 	SOCKET* value;
 };
 
