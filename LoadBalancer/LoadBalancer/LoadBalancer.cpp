@@ -1,10 +1,6 @@
 // LoadBalancer.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-#include <WS2tcpip.h>
-#include <iostream>
 #include "common.h"
-#include <winsock2.h>
-#include <thread>
 
 #pragma comment(lib,"Ws2_32.lib")
 

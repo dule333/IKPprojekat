@@ -1,7 +1,5 @@
 #include "common.h"
 
-using namespace std;
-
 #pragma region worker_queue
 
 void worker_enqueue(worker_queue* tail, thread* worker)
@@ -29,20 +27,20 @@ thread* worker_dequeue(worker_queue* head)
 
 #pragma region socket_queue
 
-void socket_enqueue(socket_queue* tail, SOCKET* socket)
+void socket_enqueue(socket_queue* tail, sockaddr_in clientAddress)
 {
 	socket_queue* new_socket = (socket_queue*)malloc(sizeof(socket_queue));
 	if (new_socket == NULL)
 		return;
 	new_socket->next = tail;
-	new_socket->value = socket;
+	new_socket->value = clientAddress;
 	tail = new_socket;
 }
 
-SOCKET* socket_dequeue(socket_queue* head)
+sockaddr_in socket_dequeue(socket_queue* head)
 {
 	socket_queue* temp = head->next;
-	SOCKET* temp_socket = head->value;
+	sockaddr_in temp_socket = head->value;
 	free(head);
 	head = temp;
 	return temp_socket;

@@ -15,7 +15,7 @@ struct worker_queue
 struct socket_queue
 {
 	socket_queue* next;
-	SOCKET* value;
+	sockaddr_in value;
 };
 
 
@@ -90,7 +90,7 @@ void worker_enqueue(worker_queue*, thread*);
 thread* worker_dequeue(worker_queue*);
 
 void socket_enqueue(socket_queue*, SOCKET*);
-SOCKET* socket_dequeue(socket_queue*);
+sockaddr_in socket_dequeue(socket_queue*);
 
 
 void execute(Request r);

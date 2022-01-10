@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="LoadBalancer.cpp" />
+    <ClCompile Include="receive.cpp" />
     <ClCompile Include="recieve.cpp" />
     <ClCompile Include="report.cpp" />
     <ClCompile Include="structures.cpp" />

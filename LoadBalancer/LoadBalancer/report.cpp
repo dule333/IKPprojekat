@@ -6,7 +6,7 @@ void report(socket_queue *return_sockets)
 	{
 		if (return_sockets != NULL)
 		{
-			SOCKET* current_socket = socket_dequeue(return_sockets);
+			sockaddr_in current_client = socket_dequeue(return_sockets);
 
 			char* buffer = (char*)malloc(3);
 
@@ -14,7 +14,7 @@ void report(socket_queue *return_sockets)
 
 			strcpy_s(buffer, 3, "ok");
 
-			send(*current_socket, buffer, 2, 0);
+			//send(*current_socket, buffer, 2, 0);
 
 			free(buffer);
 		}
