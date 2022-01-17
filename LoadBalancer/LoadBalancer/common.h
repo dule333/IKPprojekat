@@ -5,17 +5,18 @@
 #include <thread>
 
 using namespace std;
-
+/*
 struct worker_queue
 {
 	worker_queue* next;
 	thread* value;
 };
-
+*/
 struct socket_queue
 {
 	socket_queue* next;
-	sockaddr_in value;
+	sockaddr_in address;
+	int state; // -1 = not connected,  0  busy  1 free
 };
 
 
@@ -42,6 +43,7 @@ struct CircleBuffer {
 		pushId = 0;
 		popId = 0;
 		full = false;
+		//BUFFER = (Request *)malloc(sizeof(Request) * 20);
 	}
 	Request BUFFER[10];
 	int pushId = 0;
@@ -96,6 +98,6 @@ sockaddr_in socket_dequeue(socket_queue*);
 void execute(Request r);
 void work(Request r, thread* worker, worker_queue* head, socket_queue* shead);
 
-
+void recieve(CircleBuffer cb, bool* stop);
 
 
