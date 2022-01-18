@@ -1,5 +1,5 @@
 #include "common.h"
-
+/*
 #pragma region worker_queue
 
 void worker_enqueue(worker_queue* tail, thread* worker)
@@ -24,10 +24,10 @@ thread* worker_dequeue(worker_queue* head)
 
 
 #pragma endregion
-
+*/
 #pragma region socket_queue
 
-void socket_enqueue(socket_queue* tail, sockaddr_in clientAddress)
+void socket_enqueue(socket_queue* tail, SOCKET clientAddress)
 {
 	socket_queue* new_socket = (socket_queue*)malloc(sizeof(socket_queue));
 	if (new_socket == NULL)
@@ -37,10 +37,10 @@ void socket_enqueue(socket_queue* tail, sockaddr_in clientAddress)
 	tail = new_socket;
 }
 
-sockaddr_in socket_dequeue(socket_queue* head)
+SOCKET socket_dequeue(socket_queue* head)
 {
 	socket_queue* temp = head->next;
-	sockaddr_in temp_socket = head->value;
+	SOCKET temp_socket = head->value;
 	free(head);
 	head = temp;
 	return temp_socket;

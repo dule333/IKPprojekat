@@ -1,12 +1,12 @@
 #include "common.h"
 
-void report(socket_queue *return_sockets)
+void report(socket_queue *return_sockets, bool *halt)
 {
-	while (1)
+	while (*halt)
 	{
 		if (return_sockets != NULL)
 		{
-			sockaddr_in current_client = socket_dequeue(return_sockets);
+			SOCKET current_client = socket_dequeue(return_sockets);
 
 			char* buffer = (char*)malloc(3);
 
@@ -14,7 +14,7 @@ void report(socket_queue *return_sockets)
 
 			strcpy_s(buffer, 3, "ok");
 
-			//send(*current_socket, buffer, 2, 0);
+			send(current_client, buffer, 3, 0);
 
 			free(buffer);
 		}

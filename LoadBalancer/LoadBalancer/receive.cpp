@@ -30,34 +30,56 @@ SOCKET create_and_bind_socket()
 	return listenSocket;
 }
 
-void receiver()
+void cleanup(SOCKET socket)
 {
-	SOCKET interaction_socket = create_and_bind_socket();
-	if (interaction_socket == NULL)
+	int iResult;
+	iResult = closesocket(socket);
+	if (iResult == SOCKET_ERROR)
 	{
-		printf("An error has occured during the socket creation process.");
-		WSACleanup();
+		printf("closesocket failed with error: %d\n", WSAGetLastError());
 		return;
 	}
 
-	FD_SET set;
-	FD_ZERO(&set);
-	FD_SET(interaction_socket, &set);
+	iResult = WSACleanup();
+	if (iResult == SOCKET_ERROR)
+	{
+		printf("WSACleanup failed with error: %d\n", WSAGetLastError());
+		return;
+	}
+}
+
+void receive(bool *halt, CircleBuffer *buffer)
+{
+	SOCKET interaction_socket = NULL;
+	char accessBuffer[ACCESS_BUFFER_SIZE];
 
 	timeval timeVal;
 	timeVal.tv_sec = 0;
 	timeVal.tv_usec = 5;
+	FD_SET set;
 
-	char accessBuffer[ACCESS_BUFFER_SIZE];
-
-	while (1)
+	while (*halt)
 	{
+		if (interaction_socket == NULL)
+		{
+			create_and_bind_socket();
+			if (interaction_socket == NULL)
+			{
+				printf("An error has occured during the socket creation process.");
+				cleanup(interaction_socket);
+				return;
+			}
+			FD_ZERO(&set);
+			FD_SET(interaction_socket, &set);
+		}
+
 		memset(accessBuffer, 0, ACCESS_BUFFER_SIZE);
 
 		int iResult = select(0, &set, NULL, NULL, &timeVal);
 		if (iResult == SOCKET_ERROR)
 		{
 			printf("Error during communication.");
+			cleanup(interaction_socket);
 			return;
 		}
 		if (iResult == 0)
@@ -66,7 +88,20 @@ void receiver()
 			continue;
 		}
 
-		//iResult = recv(interaction_socket, accessBuffer, )
+		iResult = recv(interaction_socket, accessBuffer, ACCESS_BUFFER_SIZE, 0);
+
+		if (iResult == SOCKET_ERROR)
+		{
+			printf("recv failed with error: %d\n", WSAGetLastError());
+			continue;
+		}
+
+		buffer->addElement(Request(interaction_socket, accessBuffer));
+		interaction_socket = NULL;
 	}
+
+	cleanup(interaction_socket);
+
+	return;
 }
 

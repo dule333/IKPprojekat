@@ -15,24 +15,23 @@ struct worker_queue
 struct socket_queue
 {
 	socket_queue* next;
-	sockaddr_in address;
-	int state; // -1 = not connected,  0  busy  1 free
+	SOCKET value;
 };
 
 
 
 struct Request {
-	Request(sockaddr_in ca, char* mesage) {
+	Request(SOCKET ca, char* mesage) {
 		clientAdress = ca;
 		message = mesage;
 	}
 	Request() {
-		sockaddr_in help;
-		memset(&help, 0, sizeof(sockaddr_in));
+		SOCKET help;
+		memset(&help, 0, sizeof(SOCKET));
 		clientAdress = help;
 		message = (char *)"EMPTY_MESSAGE\0";
 	}
-	sockaddr_in clientAdress;
+	SOCKET clientAdress;
 	char* message;
 };
 
@@ -85,19 +84,15 @@ struct CircleBuffer {
 
 };
 
-
-
-
-void worker_enqueue(worker_queue*, thread*);
-thread* worker_dequeue(worker_queue*);
-
 void socket_enqueue(socket_queue*, SOCKET*);
-sockaddr_in socket_dequeue(socket_queue*);
+SOCKET socket_dequeue(socket_queue*);
 
 
 void execute(Request r);
-void work(Request r, thread* worker, worker_queue* head, socket_queue* shead);
+//void work(Request r, thread* worker, socket_queue* shead);
 
 void recieve(CircleBuffer cb, bool* stop);
+
+void receive(bool*, CircleBuffer*);
 
 
