@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadBalancer", "LoadBalance
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Worker", "Worker\Worker.vcxproj", "{189211FE-48F3-4B46-895B-3FD2F371AFC3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcxproj", "{BA387A0F-3F61-4237-87EF-6EFC5152F09F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Release|x64.Build.0 = Release|x64
 		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Release|x86.ActiveCfg = Release|Win32
 		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Release|x86.Build.0 = Release|Win32
+		{BA387A0F-3F61-4237-87EF-6EFC5152F09F}.Debug|x64.ActiveCfg = Debug|x64
+		{BA387A0F-3F61-4237-87EF-6EFC5152F09F}.Debug|x64.Build.0 = Debug|x64
+		{BA387A0F-3F61-4237-87EF-6EFC5152F09F}.Debug|x86.ActiveCfg = Debug|Win32
+		{BA387A0F-3F61-4237-87EF-6EFC5152F09F}.Debug|x86.Build.0 = Debug|Win32
+		{BA387A0F-3F61-4237-87EF-6EFC5152F09F}.Release|x64.ActiveCfg = Release|x64
+		{BA387A0F-3F61-4237-87EF-6EFC5152F09F}.Release|x64.Build.0 = Release|x64
+		{BA387A0F-3F61-4237-87EF-6EFC5152F09F}.Release|x86.ActiveCfg = Release|Win32
+		{BA387A0F-3F61-4237-87EF-6EFC5152F09F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
