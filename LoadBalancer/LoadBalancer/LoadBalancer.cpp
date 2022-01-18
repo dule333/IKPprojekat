@@ -1,3 +1,4 @@
+
 // LoadBalancer.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <ws2tcpip.h>
@@ -5,7 +6,6 @@
 #include <thread>
 #include <cstdlib>
 #pragma comment(lib,"Ws2_32.lib")
-
 #define SERVER_PORT 5001
 #define ACCESS_BUFFER_SIZE 1024
 #define IP_ADRESS_LENGTH 16
@@ -15,7 +15,7 @@ int main()
 {
 
 
- /*
+/*
  STEPS:
 
  Create needed buffers.
@@ -37,8 +37,8 @@ int main()
 					if a worker sent something, find him in the worker queue and update it so he is free
 
 		if exit vriteria is met exit loop
- */
 
+		*/
 	CircleBuffer CB;
 	bool stop = false;
 
@@ -178,3 +178,10 @@ void sendRequest(Request r, sockaddr_in worker) {
 	//send request to worker using TCP
 
 }
+/*
+int main()
+{
+	system("start Worker.exe");
+	cout << "I'm still working dumbass";
+	system("pause");
+}*/

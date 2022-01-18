@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1321
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadBalancer", "LoadBalancer\LoadBalancer.vcxproj", "{C85C255B-F1F7-4414-AFD1-AF8CBD9251F1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Worker", "Worker\Worker.vcxproj", "{189211FE-48F3-4B46-895B-3FD2F371AFC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{C85C255B-F1F7-4414-AFD1-AF8CBD9251F1}.Release|x64.Build.0 = Release|x64
 		{C85C255B-F1F7-4414-AFD1-AF8CBD9251F1}.Release|x86.ActiveCfg = Release|Win32
 		{C85C255B-F1F7-4414-AFD1-AF8CBD9251F1}.Release|x86.Build.0 = Release|Win32
+		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Debug|x64.ActiveCfg = Debug|x64
+		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Debug|x64.Build.0 = Debug|x64
+		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Debug|x86.ActiveCfg = Debug|Win32
+		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Debug|x86.Build.0 = Debug|Win32
+		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Release|x64.ActiveCfg = Release|x64
+		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Release|x64.Build.0 = Release|x64
+		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Release|x86.ActiveCfg = Release|Win32
+		{189211FE-48F3-4B46-895B-3FD2F371AFC3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
