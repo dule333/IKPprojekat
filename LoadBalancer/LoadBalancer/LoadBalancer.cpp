@@ -1,17 +1,14 @@
-
+/*
 // LoadBalancer.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-#include <ws2tcpip.h>
 #include "common.h"
-#include <thread>
-#include <cstdlib>
 #pragma comment(lib,"Ws2_32.lib")
 #define SERVER_PORT 5001
 #define ACCESS_BUFFER_SIZE 1024
 #define IP_ADRESS_LENGTH 16
 
 
-int main()
+int load_balancer()
 {
 
 
@@ -38,7 +35,7 @@ int main()
 
 		if exit vriteria is met exit loop
 
-		*/
+		*//*
 	CircleBuffer CB;
 	bool stop = false;
 
@@ -54,7 +51,7 @@ int main()
 
 	sockaddr_in serverAddress;
 	memset((char*)&serverAddress, 0, sizeof(serverAddress));
-	serverAddress.sin_family = AF_INET; /*set server address protocol family*/
+	serverAddress.sin_family = AF_INET; /*set server address protocol family*//*
 	serverAddress.sin_addr.s_addr = INADDR_ANY;
 	serverAddress.sin_port = htons(SERVER_PORT);
 

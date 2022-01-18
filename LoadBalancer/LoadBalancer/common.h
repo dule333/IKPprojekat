@@ -1,5 +1,6 @@
 #pragma once
 #include <WS2tcpip.h>
+#include <cstdlib>
 #include <iostream>
 #include <winsock2.h>
 #include <thread>
@@ -95,4 +96,4 @@ void recieve(CircleBuffer cb, bool* stop);
 
 void receive(bool*, CircleBuffer*);
 
-
+void report(socket_queue*, bool*);

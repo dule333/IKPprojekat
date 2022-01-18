@@ -36,14 +36,12 @@ SOCKET create_and_bind_socket()
 	int iResult = 0;
 	SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	u_long mode = 1;
-	iResult = ioctlsocket(clientSocket, FIONBIO, &mode);
+	iResult = connect(clientSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress));
 	if (iResult == SOCKET_ERROR)
+	{
+		cout << "Bad connect";
 		return NULL;
-
-	iResult = connect(clientSocket, (LPSOCKADDR)&serverAddress, sizeof(serverAddress));
-	if (iResult == SOCKET_ERROR)
-		return NULL;
+	}
 
 	return clientSocket;
 }
@@ -75,33 +73,13 @@ int main()
 	bool returning = true;
 
 	char access_buffer[ACCESS_BUFFER_SIZE];
-	timeval timeVal;
-	timeVal.tv_sec = 0;
-	timeVal.tv_usec = 5;
-	FD_SET set;
 
 	int iResult;
 
 	while (1)
 	{
-		FD_ZERO(&set);
-		FD_SET(clientSocket, &set);
 		if (returning)
 		{
-			system("pause");
-			iResult = select(0, NULL, &set, NULL, &timeVal);
-			if (iResult == SOCKET_ERROR)
-			{
-				printf("Error during communication.");
-				cleanup(clientSocket);
-				return 1;
-			}
-			if (iResult == 0)
-			{
-				Sleep(10);
-				continue;
-			}
-
 			memset(access_buffer, '1', ACCESS_BUFFER_SIZE);
 			iResult = send(clientSocket, access_buffer, 1, 0);
 
@@ -115,19 +93,6 @@ int main()
 		}
 		memset(access_buffer, 0, ACCESS_BUFFER_SIZE);
 
-		iResult = select(0, &set, NULL, NULL, &timeVal);
-		if (iResult == SOCKET_ERROR)
-		{
-			printf("Error during communication.");
-			cleanup(clientSocket);
-			return 1;
-		}
-		if (iResult == 0)
-		{
-			Sleep(10);
-			continue;
-		}
-
 		iResult = recv(clientSocket, access_buffer, ACCESS_BUFFER_SIZE, 0);
 
 		if (iResult == SOCKET_ERROR)
@@ -136,5 +101,8 @@ int main()
 			continue;
 		}
 		returning = true;
+
+		if (getchar() == 'q')
+			break;
 	}
 }

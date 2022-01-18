@@ -16,8 +16,11 @@ void report(socket_queue *return_sockets, bool *halt)
 
 			send(current_client, buffer, 3, 0);
 
+			closesocket(current_client);
+
 			free(buffer);
 		}
 		Sleep(10);
 	}
+	cout << "Report shut down gracefully." << endl;
 }
