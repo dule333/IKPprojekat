@@ -1,12 +1,12 @@
 #include "common.h"
 
-void report(socket_queue *return_sockets, bool *halt)
+void report(request_queue **return_sockets, bool *halt)
 {
 	while (*halt)
 	{
-		if (return_sockets != NULL)
+		if (*return_sockets != NULL)
 		{
-			SOCKET current_client = socket_dequeue(return_sockets);
+			Request* current_client = request_dequeue(return_sockets);
 
 			char* buffer = (char*)malloc(3);
 
@@ -14,9 +14,14 @@ void report(socket_queue *return_sockets, bool *halt)
 
 			strcpy_s(buffer, 3, "ok");
 
-			send(current_client, buffer, 3, 0);
+			int iResult = send(*(current_client->clientAdress), buffer, 3, 0);
+			if (iResult == SOCKET_ERROR)
+			{
+				cout << "ERROR DURING REPORT" << WSAGetLastError();
+			}
+			closesocket(*(current_client->clientAdress));
 
-			closesocket(current_client);
+			free_request(current_client);
 
 			free(buffer);
 		}

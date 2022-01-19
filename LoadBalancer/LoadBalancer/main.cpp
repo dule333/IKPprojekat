@@ -4,13 +4,24 @@ int main()
 {
 	//Initialization logic
 	bool halt = true;
-	CircleBuffer buffer = CircleBuffer();
-	socket_queue* queue = NULL;
+	CircleBuffer *buffer = (CircleBuffer*)malloc(sizeof(CircleBuffer));
+	if (buffer == NULL)
+	{
+		cout << "Memory full. Exiting." << endl;
+		halt = false;
+		Sleep(1000);
+		return 1;
+	}
+	buffer->popId = 0;
+	buffer->pushId = 0;
+	buffer->full = false;
+	request_queue* queue = NULL;
 
-	thread receiver = thread(receive, &halt, &buffer);
+	thread receiver = thread(receive, &halt, buffer, &queue);
 	receiver.detach();
-	thread reporter = thread(report, queue, &halt);
-	reporter.detach();
+	Sleep(1000);
+	thread balancer = thread(load_balancer, buffer, &queue, &halt);
+	balancer.detach();
 	//Shutdown logic
 
 	while (getchar() != 'q')
@@ -20,5 +31,6 @@ int main()
 
 	halt = false;
 	Sleep(1000);
+	free(buffer);
 	return 0;
 }

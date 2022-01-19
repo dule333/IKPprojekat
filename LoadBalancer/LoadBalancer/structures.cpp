@@ -1,49 +1,64 @@
 #include "common.h"
-/*
+
 #pragma region worker_queue
 
-void worker_enqueue(worker_queue* tail, thread* worker)
+worker_queue* worker_enqueue(worker_queue* tail, SOCKET* worker)
 {
 	worker_queue* new_worker = (worker_queue*)malloc(sizeof(worker_queue));
 	if (new_worker == NULL)
-		return;
-	new_worker->next = tail;
+		return NULL;
+	if(tail != NULL)
+		tail->next = new_worker;
+	new_worker->next = NULL;
 	new_worker->value = worker;
-	tail = new_worker;
+	return new_worker;
 }
 
 
-thread* worker_dequeue(worker_queue* head)
+SOCKET* worker_dequeue(worker_queue** head)
 {
-	worker_queue* temp = head;
-	thread* temp_thread = head->value;
-	free(head);
-	head = temp;
+	worker_queue* temp = (*head)->next;
+	SOCKET* temp_thread = (*head)->value;
+	free(*head);
+	*head = temp;
 	return temp_thread;
 }
 
 
 #pragma endregion
-*/
-#pragma region socket_queue
 
-void socket_enqueue(socket_queue* tail, SOCKET clientAddress)
+#pragma region request_queue
+
+request_queue* request_enqueue(request_queue* tail, Request* clientAddress)
 {
-	socket_queue* new_socket = (socket_queue*)malloc(sizeof(socket_queue));
+	request_queue* new_socket = (request_queue*)malloc(sizeof(request_queue));
 	if (new_socket == NULL)
-		return;
-	new_socket->next = tail;
+		return NULL;
+	if(tail != NULL)
+		tail->next = new_socket;
+	new_socket->next = NULL;
 	new_socket->value = clientAddress;
-	tail = new_socket;
+	return new_socket;
 }
 
-SOCKET socket_dequeue(socket_queue* head)
+Request* request_dequeue(request_queue** head)
 {
-	socket_queue* temp = head->next;
-	SOCKET temp_socket = head->value;
-	free(head);
-	head = temp;
+	request_queue* temp = (*head)->next;
+	Request* temp_socket = (*head)->value;
+	free(*head);
+	*head = temp;
 	return temp_socket;
+}
+
+#pragma endregion
+
+#pragma region request_methods
+
+void free_request(Request* request)
+{
+	free(request->clientAdress);
+	free(request->message);
+	free(request);
 }
 
 #pragma endregion

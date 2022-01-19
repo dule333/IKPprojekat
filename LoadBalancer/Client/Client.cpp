@@ -68,7 +68,7 @@ int main()
 {
 	printf("Client starting... \n");
 	InitializeWindowsSockets();
-	SOCKET clientSocket = create_and_bind_socket();
+	SOCKET clientSocket = NULL;
 
 	bool returning = true;
 
@@ -78,6 +78,13 @@ int main()
 
 	while (1)
 	{
+		if (clientSocket == NULL)
+			clientSocket = create_and_bind_socket();
+		if (clientSocket == INVALID_SOCKET)
+		{
+			cout << "Error during transmission, closing socket";
+			break;
+		}
 		if (returning)
 		{
 			memset(access_buffer, '1', ACCESS_BUFFER_SIZE);
@@ -86,7 +93,7 @@ int main()
 			if (iResult == SOCKET_ERROR)
 			{
 				printf("recv failed with error: %d\n", WSAGetLastError());
-				continue;
+				break;
 			}
 			returning = false;
 			continue;
@@ -98,11 +105,15 @@ int main()
 		if (iResult == SOCKET_ERROR)
 		{
 			printf("recv failed with error: %d\n", WSAGetLastError());
-			continue;
+			break;
 		}
+		cout << access_buffer << endl;
 		returning = true;
 
 		if (getchar() == 'q')
 			break;
+		closesocket(clientSocket);
+		clientSocket = NULL;
 	}
+	cleanup(clientSocket);
 }

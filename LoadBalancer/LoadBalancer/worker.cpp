@@ -1,4 +1,4 @@
-#include "common.h"
+/*#include "common.h"
 
 void execute(Request r) {
 	this_thread::sleep_for(std::chrono::seconds(1));
@@ -6,7 +6,7 @@ void execute(Request r) {
 
 }
 
-void work(socket_queue* shead, Request *input, bool* halt) {
+void work(request_queue* shead, Request *input, bool* halt) {
 	printf("Worker starting... \n");
 
 	while (!(*halt))
@@ -21,4 +21,4 @@ void work(socket_queue* shead, Request *input, bool* halt) {
 		//socket_enqueue(shead, input->clientAdress);
 	}
 	//socket_enqueue(shead, r.clientAdress); Treba prepraviti r da kao client address ima socket a ne sockaddr_in?
-}
+}*/

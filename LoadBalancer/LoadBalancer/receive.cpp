@@ -37,13 +37,13 @@ void cleanup(SOCKET socket)
 	}
 }
 
-SOCKET create_and_bind_socket()
+SOCKET create_and_bind_socket(int port)
 {
 	sockaddr_in serverAddress;
 	memset((char*)&serverAddress, 0, sizeof(serverAddress));
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_addr.s_addr = INADDR_ANY;
-	serverAddress.sin_port = htons(SERVER_PORT);
+	serverAddress.sin_port = htons(port);
 
 	int iResult = 0;
 	SOCKET listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); 
@@ -80,7 +80,7 @@ SOCKET create_and_bind_socket()
 }
 
 
-void receive(bool *halt, CircleBuffer *buffer)
+void receive(bool *halt, CircleBuffer *buffer, request_queue **queue)
 {
 	InitializeWindowsSockets();
 	SOCKET interaction_socket = NULL;
@@ -91,7 +91,7 @@ void receive(bool *halt, CircleBuffer *buffer)
 	timeVal.tv_usec = 5;
 	FD_SET set;
 
-	interaction_socket = create_and_bind_socket();
+	interaction_socket = create_and_bind_socket(SERVER_PORT);
 	if (interaction_socket == NULL)
 	{
 		printf("An error has occured during the socket creation process.");
@@ -101,6 +101,28 @@ void receive(bool *halt, CircleBuffer *buffer)
 
 	while (*halt)
 	{
+		if (*queue != NULL)
+		{
+			Request* current_client = request_dequeue(queue);
+
+			char* buffer = (char*)malloc(3);
+
+			if (buffer == NULL) return;
+
+			strcpy_s(buffer, 3, "ok");
+
+			int iResult = send(*(current_client->clientAdress), buffer, 3, 0);
+			if (iResult == SOCKET_ERROR)
+			{
+				cout << "ERROR DURING REPORT" << WSAGetLastError();
+			}
+			closesocket(*(current_client->clientAdress));
+
+			free_request(current_client);
+
+			free(buffer);
+		}
+
 		if (accepted_socket == INVALID_SOCKET)
 		{
 			accepted_socket = accept(interaction_socket, NULL, NULL);
@@ -137,10 +159,40 @@ void receive(bool *halt, CircleBuffer *buffer)
 			printf("recv failed with error: %d\n", WSAGetLastError());
 			continue;
 		}
-		
-		cout << "Woah we got something " << accessBuffer;
-
-		buffer->addElement(Request(accepted_socket, accessBuffer));
+		cout << "Request received." << endl;
+		if (buffer->full)
+		{
+			Sleep(10);
+		}
+		if (buffer->full)
+		{
+			cout << "Rejected connection due to buffer being full." << endl;
+			closesocket(accepted_socket);
+			accepted_socket = INVALID_SOCKET;
+			continue;
+		}
+		SOCKET* new_socket = (SOCKET*)malloc(sizeof(SOCKET));
+		if (new_socket == NULL)
+		{
+			cout << "Memory full. Exiting." << endl;
+			break;
+		}
+		memcpy(new_socket, &accepted_socket, sizeof(SOCKET));
+		Request* new_request = (Request*)malloc(sizeof(Request));
+		if (new_request == NULL)
+		{
+			cout << "Memory full. Exiting." << endl;
+			break;
+		}
+		new_request->clientAdress = new_socket;
+		new_request->message = (char*)malloc(sizeof(accessBuffer));
+		if (new_request->message == NULL)
+		{
+			cout << "Memory full. Exiting." << endl;
+			break;
+		}
+		memcpy(new_request->message, accessBuffer, sizeof(accessBuffer));
+		buffer->addElement(new_request);
 		accepted_socket = INVALID_SOCKET;
 	}
 

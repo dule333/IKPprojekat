@@ -36,11 +36,6 @@ SOCKET create_and_bind_socket()
 	int iResult = 0;
 	SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	u_long mode = 1;
-	iResult = ioctlsocket(clientSocket, FIONBIO, &mode);
-	if (iResult == SOCKET_ERROR)
-		return NULL;
-
 	iResult = connect(clientSocket, (LPSOCKADDR)&serverAddress, sizeof(serverAddress));
 	if (iResult == SOCKET_ERROR)
 		return NULL;
@@ -75,19 +70,24 @@ int main()
 		printf("Worker starting... \n");
 		InitializeWindowsSockets();
 		SOCKET clientSocket = create_and_bind_socket();
+		char bufferfornothing[1024];
+
 
 		bool returning = false;
 		
 		char access_buffer[ACCESS_BUFFER_SIZE];
-		char halt_order[2] = {'-', '1'};
+		char* halt_order = (char*)malloc(3);
+		if (halt_order == 0)
+			return 1;
+		strcpy_s(halt_order, 3, "-1");
 		timeval timeVal;
 		timeVal.tv_sec = 0;
 		timeVal.tv_usec = 5;
 		FD_SET set;
 
-		memset(access_buffer, '1', 1);
+		strcpy_s(access_buffer, 3, "ok");
 
-		int iResult = send(clientSocket, access_buffer, 1, 0);
+		int iResult = send(clientSocket, access_buffer, 3, 0);
 		if (iResult == SOCKET_ERROR)
 		{
 			cleanup(clientSocket);
@@ -112,11 +112,11 @@ int main()
 					Sleep(10);
 					continue;
 				}
-				iResult = send(clientSocket, access_buffer, 3, 0);
+				iResult = send(clientSocket, access_buffer, strlen(access_buffer) + 1, 0);
 
 				if (iResult == SOCKET_ERROR)
 				{
-					printf("recv failed with error: %d\n", WSAGetLastError());
+					printf("send failed with error: %d\n", WSAGetLastError());
 					continue;
 				}
 				returning = false;
@@ -136,8 +136,8 @@ int main()
 				Sleep(10);
 				continue;
 			}
-
-			iResult = recv(clientSocket, access_buffer, ACCESS_BUFFER_SIZE, 0);
+			
+			iResult = recv(clientSocket, bufferfornothing, ACCESS_BUFFER_SIZE, 0);
 
 			if (iResult == SOCKET_ERROR)
 			{
@@ -145,11 +145,13 @@ int main()
 				continue;
 			}
 
-			if (!memcmp(halt_order, access_buffer, 2))
+			if (!strcmp(halt_order, bufferfornothing))
 			{
 				cleanup(clientSocket);
+				free(halt_order);
 				return 0;
 			}
+
 
 			execute();
 			returning = true;
