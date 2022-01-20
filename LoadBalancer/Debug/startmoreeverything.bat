@@ -1,0 +1,6 @@
+startevertything.bat
+startevertything.bat
+startevertything.bat
+startevertything.bat
+startevertything.bat
+startevertything.bat

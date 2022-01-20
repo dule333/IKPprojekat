@@ -1,5 +1,4 @@
 #include <iostream>
-#include <thread>
 #include <WS2tcpip.h>
 #include <winsock2.h>
 

@@ -79,7 +79,7 @@ SOCKET create_and_bind_socket(int port)
 	return listenSocket;
 }
 
-void receive(bool *halt, CircleBuffer *buffer, request_queue **queue)
+void receive(bool* halt, CircleBuffer* buffer, request_queue** queue)
 {
 	InitializeWindowsSockets();
 	SOCKET interaction_socket = NULL;
@@ -202,4 +202,3 @@ void receive(bool *halt, CircleBuffer *buffer, request_queue **queue)
 	cout << "Receive shut down gracefully." << endl;
 	return;
 }
-

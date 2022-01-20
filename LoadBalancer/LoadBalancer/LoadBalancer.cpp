@@ -9,12 +9,10 @@ SOCKET* create_worker(SOCKET socket)
 {
 	system("start Worker.exe");
 	SOCKET accepted_socket = INVALID_SOCKET;
-	Sleep(1000);
-	accepted_socket = accept(socket, NULL, NULL);
-	if (accepted_socket == INVALID_SOCKET)
+	while(accepted_socket == INVALID_SOCKET)
 	{
-		cout << "Uh oh";
-		return NULL;
+		accepted_socket = accept(socket, NULL, NULL);
+		Sleep(10);
 	}
 	SOCKET* socket_gotten = (SOCKET*)malloc(sizeof(SOCKET));
 	if (!socket_gotten)

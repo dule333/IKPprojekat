@@ -4,7 +4,7 @@
 #include <iostream>
 #include <winsock2.h>
 #include <thread>
-
+#define MAX_SIZE 100
 using namespace std;
 
 struct worker_queue
@@ -26,7 +26,7 @@ struct request_queue
 };
 
 struct CircleBuffer {
-	Request* BUFFER[10];
+	Request* BUFFER[MAX_SIZE];
 	int pushId = 0;
 	int popId = 0;
 	bool full = false;
@@ -34,7 +34,7 @@ struct CircleBuffer {
 		if (!full) {
 			BUFFER[pushId] = element;
 			pushId++;
-			if (pushId > 9) pushId = 0;
+			if (pushId > MAX_SIZE-1) pushId = 0;
 			if (pushId == popId) full = true;
 
 			return true;
@@ -45,7 +45,7 @@ struct CircleBuffer {
 		if ((pushId != popId) || full) {
 			Request* ret = BUFFER[popId];
 			popId++;
-			if (popId > 9) popId = 0;
+			if (popId > MAX_SIZE-1) popId = 0;
 			if (full) full = false;
 			return ret;
 		}
@@ -54,9 +54,9 @@ struct CircleBuffer {
 
 	int elementNum() {
 		if (pushId < popId)
-			return pushId + 10 - popId;
+			return pushId + MAX_SIZE - popId;
 		if (full)
-			return 10;
+			return MAX_SIZE;
 		return pushId - popId;
 	}
 };
