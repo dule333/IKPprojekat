@@ -79,7 +79,6 @@ SOCKET create_and_bind_socket(int port)
 	return listenSocket;
 }
 
-
 void receive(bool *halt, CircleBuffer *buffer, request_queue **queue)
 {
 	InitializeWindowsSockets();
@@ -103,7 +102,8 @@ void receive(bool *halt, CircleBuffer *buffer, request_queue **queue)
 	{
 		if (*queue != NULL)
 		{
-			Request* current_client = request_dequeue(queue);
+			Sleep(10);
+			Request* current_client = requests_remove(queue);
 
 			char* buffer = (char*)malloc(3);
 
@@ -178,6 +178,7 @@ void receive(bool *halt, CircleBuffer *buffer, request_queue **queue)
 			break;
 		}
 		memcpy(new_socket, &accepted_socket, sizeof(SOCKET));
+		cout << "Got request from socket:" << *new_socket << endl;
 		Request* new_request = (Request*)malloc(sizeof(Request));
 		if (new_request == NULL)
 		{
@@ -185,13 +186,14 @@ void receive(bool *halt, CircleBuffer *buffer, request_queue **queue)
 			break;
 		}
 		new_request->clientAdress = new_socket;
-		new_request->message = (char*)malloc(sizeof(accessBuffer));
+		new_request->message = (char*)malloc(strlen(accessBuffer) + 1);
 		if (new_request->message == NULL)
 		{
 			cout << "Memory full. Exiting." << endl;
 			break;
 		}
-		memcpy(new_request->message, accessBuffer, sizeof(accessBuffer));
+		strcpy_s(new_request->message, strlen(accessBuffer) + 1, accessBuffer);
+
 		buffer->addElement(new_request);
 		accepted_socket = INVALID_SOCKET;
 	}

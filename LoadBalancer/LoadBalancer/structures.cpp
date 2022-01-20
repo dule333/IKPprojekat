@@ -52,6 +52,38 @@ Request* request_dequeue(request_queue** head)
 
 #pragma endregion
 
+#pragma region request_list
+
+
+void requests_add(request_queue** list, Request* value)
+{
+	if (*list == NULL)
+	{
+		*list = (request_queue*)malloc(sizeof(request_queue));
+		if (*list == NULL)
+			return;
+		(*list)->value = value;
+		(*list)->next = NULL;
+		return;
+	}
+	request_queue* temp = (request_queue*)malloc(sizeof(request_queue)); 
+	if (temp == NULL)
+		return;
+	temp->next = *list;
+	temp->value = value;
+	*list = temp;
+}
+Request* requests_remove(request_queue** list)
+{
+	Request* result = (*list)->value;
+	request_queue* next = (*list)->next;
+	free(*list);
+	*list = next;
+	return result;
+}
+
+#pragma endregion
+
 #pragma region request_methods
 
 void free_request(Request* request)

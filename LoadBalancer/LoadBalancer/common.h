@@ -34,7 +34,7 @@ struct CircleBuffer {
 		if (!full) {
 			BUFFER[pushId] = element;
 			pushId++;
-			if (pushId == 10) pushId = 0;
+			if (pushId > 9) pushId = 0;
 			if (pushId == popId) full = true;
 
 			return true;
@@ -42,10 +42,10 @@ struct CircleBuffer {
 		return false;
 	}
 	Request* removeElement() {
-		if (pushId != popId) {
+		if ((pushId != popId) || full) {
 			Request* ret = BUFFER[popId];
 			popId++;
-			if (popId == 10) popId = 0;
+			if (popId > 9) popId = 0;
 			if (full) full = false;
 			return ret;
 		}
@@ -55,6 +55,8 @@ struct CircleBuffer {
 	int elementNum() {
 		if (pushId < popId)
 			return pushId + 10 - popId;
+		if (full)
+			return 10;
 		return pushId - popId;
 	}
 };
@@ -76,3 +78,6 @@ bool InitializeWindowsSockets();
 void cleanup(SOCKET);
 
 SOCKET create_and_bind_socket(int);
+
+void requests_add(request_queue**, Request*);
+Request* requests_remove(request_queue**);

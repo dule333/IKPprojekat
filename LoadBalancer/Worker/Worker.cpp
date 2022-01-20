@@ -117,7 +117,7 @@ int main()
 				if (iResult == SOCKET_ERROR)
 				{
 					printf("send failed with error: %d\n", WSAGetLastError());
-					continue;
+					break;
 				}
 				returning = false;
 				continue;
@@ -142,7 +142,7 @@ int main()
 			if (iResult == SOCKET_ERROR)
 			{
 				printf("recv failed with error: %d\n", WSAGetLastError());
-				continue;
+				break;
 			}
 
 			if (!strcmp(halt_order, bufferfornothing))

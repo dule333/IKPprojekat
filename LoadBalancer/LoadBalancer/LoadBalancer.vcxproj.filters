@@ -18,16 +18,7 @@
     <ClCompile Include="LoadBalancer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="report.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="structures.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="recieve.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="worker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="receive.cpp">

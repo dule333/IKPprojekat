@@ -43,7 +43,7 @@ void load_balancer(CircleBuffer* buffer, request_queue** requests, bool* halt)
 
 	int numOfWorkers = 0;
 	request_queue *queue_head = NULL, *queue_tail = NULL, *requests_head = NULL;
-
+	bool kill = false;
 	InitializeWindowsSockets();
 	SOCKET accepted_socket = NULL;
 	SOCKET interaction_socket = NULL;
@@ -79,8 +79,12 @@ void load_balancer(CircleBuffer* buffer, request_queue** requests, bool* halt)
 		{
 			FD_ZERO(&set);
 			FD_SET(*(head_free->value), &set);
-			if(temp_request == NULL)
+			if (temp_request == NULL)
+			{
 				temp_request = buffer->removeElement();
+			}
+			if (temp_request == NULL)
+				cout << "Buffer failed." << endl;
 
 			int iResult = select(0, NULL, &set, NULL, &timeVal);
 			if (iResult == SOCKET_ERROR)
@@ -100,14 +104,18 @@ void load_balancer(CircleBuffer* buffer, request_queue** requests, bool* halt)
 					continue;
 				}
 			}
+			cout << "Sending task." << *(temp_request->clientAdress) << endl;
 			queue_tail = request_enqueue(queue_tail, temp_request);
 			if (queue_head == NULL)
 				queue_head = queue_tail;
+			if (head_free->next == NULL)
+				tail_free = NULL;
 			tail_busy = worker_enqueue(tail_busy, worker_dequeue(&head_free));
 			if (!head_busy)
 			{
 				head_busy = tail_busy;
 			}
+			temp_request = NULL;
 
 		}
 
@@ -117,6 +125,7 @@ void load_balancer(CircleBuffer* buffer, request_queue** requests, bool* halt)
 		case 1:
 			if (numOfWorkers < MAX_WORKERS)
 			{
+				cout << "Making worker." << endl;
 				tail_free = worker_enqueue(tail_free, create_worker(interaction_socket));
 				if (head_free == NULL)
 				{
@@ -126,8 +135,9 @@ void load_balancer(CircleBuffer* buffer, request_queue** requests, bool* halt)
 			}
 			break;
 		case -1:
-			if (numOfWorkers > 1 && head_free)
+	/*		if (numOfWorkers > 1 && head_free)
 			{
+				cout << "Killing worker." << endl;
 				FD_ZERO(&set);
 				FD_SET(*(head_free->value), &set);
 
@@ -153,10 +163,16 @@ void load_balancer(CircleBuffer* buffer, request_queue** requests, bool* halt)
 				close_worker(head_free->value);
 				worker_queue* temp = head_free;
 				head_free = head_free->next;
+				if (head_free == NULL)
+					tail_free = NULL;
 				free(temp);
-			}
+				
+			}*/
+			if (numOfWorkers > 1)
+				kill = true;
 			break;
 		default:
+			kill = false;
 			break;
 		}
 
@@ -183,17 +199,61 @@ void load_balancer(CircleBuffer* buffer, request_queue** requests, bool* halt)
 					continue;
 				}
 
-				tail_free = worker_enqueue(tail_free, worker_dequeue(&head_busy));
-				if (head_free == NULL)
-					head_free = tail_free;
+				if (head_busy->next == NULL)
+					tail_busy = NULL;
+
+				if (kill)
+				{
+					if (head_busy->next == NULL)
+						tail_busy = NULL;
+					SOCKET* temp_worker = worker_dequeue(&head_busy);
+					cout << "Killing worker." << endl;
+					FD_ZERO(&set);
+					FD_SET(*(temp_worker), &set);
+
+					int iResult = select(0, NULL, &set, NULL, &timeVal);
+					if (iResult == SOCKET_ERROR)
+					{
+						cout << "Could not select :(" << endl;
+						printf("Error during communication.");
+						cleanup(interaction_socket);
+						return;
+					}
+					if (iResult > 0)
+					{
+						iResult = send(*(temp_worker), clearBuffer, 3, 0);
+
+						if (iResult == SOCKET_ERROR)
+						{
+							printf("recv failed with error: %d\n", WSAGetLastError());
+							continue;
+						}
+
+						close_worker(temp_worker);
+						kill = false;
+						numOfWorkers--;
+					}
+				}
+				else
+				{
+					if (head_busy->next == NULL)
+						tail_busy = NULL;
+					tail_free = worker_enqueue(tail_free, worker_dequeue(&head_busy));
+					if (head_free == NULL)
+						head_free = tail_free;
+				}
+				if (queue_head == NULL)
+				{
+					cout << "Queue empty somehow." << endl;
+					break;
+				}
+				if (queue_head->next == NULL)
+					queue_tail = NULL;
 				temp_request = request_dequeue(&queue_head);
-
-				requests_head = request_enqueue(requests_head, temp_request);
+				cout << "Receiving task." << endl;
+				requests_add(requests, temp_request);
 				temp_request = NULL;
-				if (*requests == NULL)
-					*requests = requests_head;
 			}
-
 		}
 	}
 	cleanup(interaction_socket);
